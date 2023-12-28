@@ -18,6 +18,7 @@ model Raffle {
   userId       String
   participants Int
   result       Result @default(PROCESSING)
+  resultID     String @default("0")
 
   @@unique([eventId, timeId, userId], name: "unique_raffle")
 }
