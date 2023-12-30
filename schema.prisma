@@ -18,9 +18,17 @@ model Raffle {
   userId       String
   participants Int
   result       Result @default(PROCESSING)
-  resultID     String @default("0")
 
   @@unique([eventId, timeId, userId], name: "unique_raffle")
+}
+
+model Event {
+  uuid    String @id @default(uuid())
+  eventId Int    
+  timeId  Int    
+  raffleId      String 
+
+  @@unique([eventId, timeId], name: "unique_event")
 }
 
 enum Result {
