@@ -1,32 +1,38 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model User {
-  uuid   String   @id @default(uuid())
-  email  String   @unique //hashed sha256
-  raffle Raffle[]
+  uuid         String   @id @default(uuid())
+  email        String   @unique
+  notification Boolean  @default(true)
+  raffle       Raffle[]
 }
 
 model Raffle {
   uuid         String @id @default(uuid())
   eventId      Int
   timeId       Int
-  user         User   @relation(fields: [userId], references: [uuid])
   userId       String
   participants Int
   result       Result @default(PROCESSING)
+  user         User   @relation(fields: [userId], references: [uuid])
 
   @@unique([eventId, timeId, userId], name: "unique_raffle")
 }
 
 model Event {
-  uuid    String @id @default(uuid())
-  eventId Int    
-  timeId  Int    
-  raffleId      String 
+  uuid     String @id @default(uuid())
+  eventId  Int
+  timeId   Int
+  raffleId String
 
   @@unique([eventId, timeId], name: "unique_event")
 }
@@ -35,9 +41,4 @@ enum Result {
   WIN
   LOSE
   PROCESSING
-}
-
-generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native"]
 }
